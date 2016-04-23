@@ -1,5 +1,7 @@
 # advenjure-example
 
+![Example game](example.gif)
+
 Example game for the [advenjure](https://github.com/facundoolano/advenjure) text game engine.
 
 ## Usage
