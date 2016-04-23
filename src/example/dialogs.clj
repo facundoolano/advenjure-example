@@ -5,13 +5,6 @@
 (def PLAYER "ME")
 (def NPC "NPC")
 
- ;;; By default a (dialog) entry would go sequentially through all of it's branches
- ;;; If a branch is a single line, i.e. (PLAYER "Hi"), just say it.
- ;;; If it's a special function (if-event, once, random) evaluate it according to its rules.
- ;;; If a branch is itself another a dialog, exhaust it first and then go back to the parent
- ;;; dialog and keep traversing.
- ;;; when using the jump function, the current tree traversal is dropped.
-
 ; the bool function will take game-state. If true at execution show the first
 ; dialog branch, if false the second (if any)
 (def greet-npc (conditional (event? :knows-npc)
