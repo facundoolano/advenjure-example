@@ -1,6 +1,8 @@
 (ns example.core
   (:require [advenjure.game :as game]
-            [example.rooms :refer [room-map]])
+            [example.rooms :refer [room-map]]
+            [example.verbs :refer [verb-map]])
+
   (:gen-class))
 
 (defn -main
@@ -8,4 +10,4 @@
   [& args]
   (let [game-state (game/make room-map :bedroom)
         finished? #(= (:current-room %) :outside)]
-    (game/run game-state finished? "Welcome to the example game! type 'help' if you don't know what to do.\n")))
+    (game/run game-state finished? "Welcome to the example game! type 'help' if you don't know what to do.\n" verb-map)))

@@ -43,8 +43,8 @@
   "Magazine item is removed from inventory, NPC character is removed from room,
   player describes NPC leaving."
   [game-state]
-  (let [magazine (utils/find-item game-state "magazine")
-        npc (utils/find-item game-state "character")]
+  (let [magazine (first (utils/find-item game-state "magazine"))
+        npc (first (utils/find-item game-state "character"))]
     (utils/say "And so the NPC took the magazine and left the room.")
     (-> game-state
         (utils/remove-item magazine)

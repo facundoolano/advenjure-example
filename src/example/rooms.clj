@@ -26,15 +26,38 @@
 
 (def glass-door (item/make ["glass door" "door"] "needed some cleaning."))
 
+; add the magazine item to the room to simulate it being "revealed" behind the bed
+; replace the bed item so it can't be moved again
+(defn get-moved-bed [bed]
+  (let [move-text "I moved it enough already."]
+    (merge bed {:move move-text
+                :push move-text
+                :pull move-text})))
+
+(defn move-bed [old gs]
+  (let [old-bed (first (utils/find-item gs "bed"))
+        new-bed (get-moved-bed old-bed)
+        bedroom (utils/current-room gs)
+        new-bedroom (-> bedroom
+                        (update-in [:items] item/replace-from old-bed new-bed)
+                        (room/add-item magazine "On the floor was a sports magazine."))] ; use a room-specific description of the magazine
+    (utils/say "I pushed the bed revealing a sports magazine.")
+    (assoc-in gs [:room-map :bedroom] new-bedroom)))
+
+
+(def bed (item/make ["bed"] "It was the bed I slept in."
+                    :pull "Couldn't move it in that direction."
+                    :move "Be more specific."
+                    :push {:post `move-bed}))
+
+
 (def bedroom (-> (room/make "Bedroom"
                             "A smelling bedroom. There was an unmade bed near the corner and a door to the north."
                             :initial-description "I woke up in a smelling little bedroom, without windows. By the bed I was laying in was a small table and to the north a glass door.")
-                 (room/add-item magazine "On the floor was a sports magazine.") ; use this when describing the room instead of "there's a magazine here"
-                 (room/add-item (item/make ["bed"] "It was the bed I slept in.") "") ; empty means skip it while describing, already contained in room description
+                 (room/add-item bed "") ; empty means skip it while describing, already contained in room description
                  (room/add-item glass-door "")
                  (room/add-item (item/make ["small table" "table"] "A small bed table."
                                            :items #{wallet bottle (item/make ["reading lamp" "lamp"])}))))
-
 
 
 (def door (item/make ["door" "wooden door"] "Looked like oak to me." :locked true))
@@ -65,13 +88,13 @@
 (def outside (room/make "Outside" "I found myself in a beautiful garden and was able to breath again. A new adventure began, an adventure that is out of the scope of this example game."))
 
 (defn can-leave? [gs]
-  (let [door (utils/find-item gs "wooden door")]
+  (let [door (first (utils/find-item gs "wooden door"))]
     (cond (:locked door) "The door was locked."
           (not (contains? (:inventory gs) wallet)) "I couldn't leave without my wallet."
           :else :hallway)))
 
 (defn npc-gone? [gs]
-  (if (utils/find-item gs "character")
+  (if (first (utils/find-item gs "character"))
     "I couldn't, that guy was blocking the portal."
     :outside))
 
