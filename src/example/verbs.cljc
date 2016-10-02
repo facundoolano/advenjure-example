@@ -18,6 +18,6 @@
 
 (def verb-map (-> default-map ;; support all the default verbs
                   (add-verb ["^yell$" "^scream$"] yell) ;; supoprt synonyms
-                  (add-verb ["^move (.*)" "^move$"] move) ;; need the (?<item>.*) bit for autocompletion
-                  (add-verb ["^pull (.*)" "^pull$"] pull)  ;; need the no item version for the "pull what?" response
-                  (add-verb ["^push (.*)" "^push$"] push)))
+                  (add-verb ["^move (?<item>.*)" "^move$"] move) ;; need the (?<item>.*) bit for autocompletion
+                  (add-verb ["^pull (?<item>.*)" "^pull$"] pull)  ;; need the no item version for the "pull what?" response
+                  (add-verb ["^push (?<item>.*)" "^push$"] push)))
