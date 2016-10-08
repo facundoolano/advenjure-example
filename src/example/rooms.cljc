@@ -2,8 +2,12 @@
   (:require [advenjure.items :as item]
             [advenjure.rooms :as room]
             [advenjure.utils :as utils]
-            [advenjure.dialogs :refer [dialog]]
-            [example.dialogs :refer [npc-dialog]]))
+            [advenjure.ui.output]
+            [advenjure.ui.output :refer [print-line]]
+            #?(:cljs [advenjure.dialogs]
+               :clj [advenjure.dialogs :refer [dialog]])
+            [example.dialogs :refer [npc-dialog]])
+  #?(:cljs (:require-macros [advenjure.dialogs :refer [dialog]])))
 
 ;;; DEFINE ROOMS AND ITEMS
 (def magazine (item/make ["sports magazine" "magazine"]
@@ -12,15 +16,17 @@
                          :take true
                          :gender :female))
 
+(def wallet-dialog (dialog ("ME" "Hi, wallet.")
+                           ("WALLET" "Tsup?")
+                           ("ME" "Any cash I can use?")
+                           ("WALLET" "Sorry.")))
+
 (def wallet (item/make ["wallet"] "It was made of cheap imitation leather."
                        :take true
                        :gender :female
                        :open "I didn't have a dime."
                        :look-in "I didn't have a dime."
-                       :dialog `(dialog ("ME" "Hi, wallet.")
-                                        ("WALLET" "Tsup?")
-                                        ("ME" "Any cash I can use?")
-                                        ("WALLET" "Sorry."))))
+                       :dialog `wallet-dialog))
 
 (def bottle (item/make "bottle" "nothing special about it" :items #{(item/make "amount of water")}))
 
@@ -55,6 +61,7 @@
                             "A smelling bedroom. There was an unmade bed near the corner and a door to the north."
                             :initial-description "I woke up in a smelling little bedroom, without windows. By the bed I was laying in was a small table and to the north a glass door.")
                  (room/add-item bed "") ; empty means skip it while describing, already contained in room description
+                 (room/add-item (item/make "floor" "The floor was scratched near the bed.") "The floor was scratched near the bed.")
                  (room/add-item glass-door "")
                  (room/add-item (item/make ["small table" "table"] "A small bed table."
                                            :items #{wallet bottle (item/make ["reading lamp" "lamp"])}))))

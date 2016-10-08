@@ -1,6 +1,6 @@
 (ns example.verbs
-  (:require [advenjure.verbs :refer [make-item-handler make-say-verb]])
-  (:require [advenjure.verb-map :refer [default-map add-verb]]))
+  (:require [advenjure.verbs :refer [make-item-handler make-say-verb]]
+            [advenjure.verb-map :refer [default-map add-verb]]))
 
 ;; some examples of adding custom verbs to support new commands
 

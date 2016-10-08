@@ -10,3 +10,6 @@ pom.xml.asc
 .hgignore
 .hg/
 saved.game
+out/
+main.js
+dev.js
