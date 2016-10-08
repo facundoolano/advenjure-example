@@ -13,9 +13,10 @@
        :compiler {:output-to "main.js"  ; default: target/cljsbuild-main.js
                   :output-dir "out"
                   :main example.core
-                  :optimizations :none
-                  :source-map true
-                  :pretty-print true}}]}
+                  :optimizations :simple
+                  :pretty-print false
+                  :optimize-constants true
+                  :static-fns true}}]}
   :main ^:skip-aot example.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})
