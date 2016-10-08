@@ -9,14 +9,22 @@
                  [advenjure "0.3.0"]]
   :cljsbuild
     {:builds
-     [{:source-paths ["src"]
-       :compiler {:output-to "main.js"  ; default: target/cljsbuild-main.js
-                  :output-dir "out"
-                  :main example.core
-                  :optimizations :simple
-                  :pretty-print false
-                  :optimize-constants true
-                  :static-fns true}}]}
+     {:main {:source-paths ["src"]
+             :compiler {:output-to "main.js"
+                        :main example.core
+                        :optimizations :simple
+                        :pretty-print false
+                        :optimize-constants true
+                        :static-fns true}}
+
+      :dev {:source-paths ["src"]
+            :compiler {:output-to "dev.js"
+                       :main example.core
+                       :optimizations :none
+                       :source-map true
+                       :pretty-print true}}}}
+
+
   :main ^:skip-aot example.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})
