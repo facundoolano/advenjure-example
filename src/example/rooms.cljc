@@ -61,6 +61,7 @@
                             "A smelling bedroom. There was an unmade bed near the corner and a door to the north."
                             :initial-description "I woke up in a smelling little bedroom, without windows. By the bed I was laying in was a small table and to the north a glass door.")
                  (room/add-item bed "") ; empty means skip it while describing, already contained in room description
+                 (room/add-item (item/make "floor" "The floor was scratched near the bed.") "The floor was scratched near the bed.")
                  (room/add-item glass-door "")
                  (room/add-item (item/make ["small table" "table"] "A small bed table."
                                            :items #{wallet bottle (item/make ["reading lamp" "lamp"])}))))
