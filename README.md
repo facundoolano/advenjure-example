@@ -3,6 +3,7 @@
 ![Example game](example.gif)
 
 Example game for the [advenjure](https://github.com/facundoolano/advenjure) text game engine.
+You can play it online [here](https://facundoolano.github.io/advenjure/).
 
 ## Usage
 
