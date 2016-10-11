@@ -28,7 +28,29 @@
                        :look-in "I didn't have a dime."
                        :dialog `wallet-dialog))
 
-(def bottle (item/make "bottle" "nothing special about it" :items #{(item/make "amount of water")}))
+
+; use a precondition to decide if drink action can be executed
+(defn pre-drink
+  [game-state]
+  (let [bottle (utils/find-first game-state "bottle")]
+    (or (not-empty (:items bottle)) "It was empty")))
+
+; since drink was defined without a generic handler, its side effects can be
+; coded as a item-specific post conditions
+(defn post-drink
+  [old-state new-state]
+  (let [bottle (utils/find-first new-state "bottle")]
+    (utils/say "Refreshing.")
+    (utils/replace-item new-state bottle (assoc bottle :items #{}))))
+
+
+(def bottle (item/make "bottle" "nothing special about it"
+                       :items #{(item/make ["amount of water" "water"] "looks good." :drink {:pre `pre-drink :post `post-drink})}
+                       :take true
+                       :open true
+                       :closed false
+                       :close "Didn't want to."
+                       :drink {:pre `pre-drink :post `post-drink}))
 
 (def glass-door (item/make ["glass door" "door"] "needed some cleaning."))
 
