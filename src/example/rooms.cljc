@@ -32,7 +32,6 @@
                        :look-in "I didn't have a dime."
                        :dialog `wallet-dialog))
 
-
 ; use a precondition to decide if drink action can be executed
 (defn pre-drink
   [game-state]
@@ -82,11 +81,22 @@
                     :move "Be more specific."
                     :push {:post `move-bed}))
 
+(def safe-combination (str (rand-int 10000)))
+
+(def paper (item/make ["paper" "piece of paper"]
+                      "it had a number written on it."
+                      :take true
+                      :read (str "\"" safe-combination "\"")))
+
+(def trash-bin (item/make ["trash bin" "trash" "trash can" "bin"]
+                          "Aluminum."
+                          :items #{paper}))
 
 (def bedroom (-> (room/make "Bedroom"
                             "A smelling bedroom. There was an unmade bed near the corner and a door to the north."
                             :initial-description "I woke up in a smelling little bedroom, without windows. By the bed I was laying in was a small table and to the north a glass door.")
                  (room/add-item bed "") ; empty means skip it while describing, already contained in room description
+                 (room/add-item trash-bin "Just by the table, a trash bin.")
                  (room/add-item (item/make "floor" "The floor was scratched near the bed.") "The floor was scratched near the bed.")
                  (room/add-item glass-door "")
                  (room/add-item (item/make ["small table" "table"] "A small bed table."
@@ -101,13 +111,10 @@
                        :items #{(item/make ["bronze key" "key"] "A bronze key." :unlocks door :take true)}))
 
 (def magazine (item/make ["sports magazine" "magazine"]
-                          "The cover read 'Sports Almanac 1950-2000'"
-                          :read "It told the results of every major sports event till the end of the century."
-                          :take true
-                          :gender :female))
-
-; FIXME make random
-(def safe-combination "12345")
+                         "The cover read 'Sports Almanac 1950-2000'"
+                         :read "It told the results of every major sports event till the end of the century."
+                         :take true
+                         :gender :female))
 
 (defn enter-combination
   [game-state]
