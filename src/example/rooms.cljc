@@ -1,20 +1,24 @@
 (ns example.rooms
-  (:require [advenjure.items :as item]
+  (:require [clojure.string :as string]
+            [advenjure.items :as item]
             [advenjure.rooms :as room]
             [advenjure.utils :as utils]
             [advenjure.ui.output]
             [advenjure.ui.output :refer [print-line]]
+            [advenjure.ui.input :refer [prompt-value]]
             #?(:cljs [advenjure.dialogs]
                :clj [advenjure.dialogs :refer [dialog]])
             [example.dialogs :refer [npc-dialog]])
   #?(:cljs (:require-macros [advenjure.dialogs :refer [dialog]])))
 
 ;;; DEFINE ROOMS AND ITEMS
-(def magazine (item/make ["sports magazine" "magazine"]
-                         "The cover read 'Sports Almanac 1950-2000'"
-                         :read "Oh là là? Oh là là!?"
-                         :take true
-                         :gender :female))
+
+; TODO prefer naughty magazine name after reading it
+(def fake-magazine (item/make ["magazine" "naughty magazine"]
+                              "The dust cover read 'Sports Almanac 1950-2000'"
+                              :read "Oh là là? Oh là là!? That was no sports magazine..."
+                              :take true
+                              :gender :female))
 
 (def wallet-dialog (dialog ("ME" "Hi, wallet.")
                            ("WALLET" "Tsup?")
@@ -68,8 +72,8 @@
         bedroom (utils/current-room gs)
         new-bedroom (-> bedroom
                         (update-in [:items] item/replace-from old-bed new-bed)
-                        (room/add-item magazine "On the floor was a sports magazine."))] ; use a room-specific description of the magazine
-    (utils/say "I pushed the bed revealing a sports magazine.")
+                        (room/add-item fake-magazine "On the floor was a sports magazine."))] ; use a room-specific description of the magazine
+    (utils/say "I pushed the bed revealing a magazine.")
     (assoc-in gs [:room-map :bedroom] new-bedroom)))
 
 
@@ -96,12 +100,58 @@
                        :closed true
                        :items #{(item/make ["bronze key" "key"] "A bronze key." :unlocks door :take true)}))
 
+(def magazine (item/make ["sports magazine" "magazine"]
+                          "The cover read 'Sports Almanac 1950-2000'"
+                          :read "It told the results of every major sports event till the end of the century."
+                          :take true
+                          :gender :female))
+
+; FIXME make random
+(def safe-combination "12345")
+
+(defn enter-combination
+  [game-state]
+  (let [combo (prompt-value "Enter combination: ")
+        combo (string/trim combo)
+        responses ["No luck." "That wasn't it." "Nope."]]
+    (if (= combo safe-combination)
+        (do (utils/say "Gotcha!") true)
+        (get responses (rand-int (count responses))))))
+
+(defn open-safe
+  [old-gs new-gs]
+  (let [kb (utils/find-first new-gs "keyboard")
+        new-kb (assoc kb :use "The safe was already open.")
+        safe (utils/find-first new-gs "safe")
+        new-safe (merge safe {:closed false
+                              :close "Better left open."})]
+    (-> new-gs
+     (utils/replace-item kb new-kb)
+     (utils/replace-item safe new-safe))))
+
+(def safe-conditions {:pre enter-combination :post open-safe})
+
+(def safe (item/make ["safe" "safe box" "strongbox" "strong box"]
+                     "Hard to open, all right."
+                     :items #{magazine}
+                     :closed true
+                     :open safe-conditions
+                     :unlock "I had to USE the keyboard to open the safe."
+                     :locked false
+                     :lock "It's already locked."))
+
+(def safe-keyboard (item/make ["keyboard" "safe keyboard" "safe box keyboard"]
+                              "A numerical keyboard to unlock the safe box."
+                              :use safe-conditions))
+
 (def living (-> (room/make "Living Room"
                            "A living room with a nailed shut window. A wooden door leaded east and a glass door back to the bedroom."
                            :initial-description "The living room was as smelly as the bedroom, and although there was a window, it appeared to be nailed shut. There was a pretty good chance I'd choke to death if I didn't leave the place soon.\nA wooden door leaded east and a glass door back to the bedroom.")
                 (room/add-item drawer "There was a chest drawer by the door.")
                 (room/add-item door "")
                 (room/add-item glass-door "")
+                (room/add-item safe "Mounted on one of the walls was a safe box with a numerical keyboard on top of it.")
+                (room/add-item safe-keyboard "")
                 (room/add-item (item/make ["window"] "It was nailed shut." :closed true :open "It was nailed shut.") "")))
 
 (def npc (item/make ["character" "suspicious looking character" "npc"]
