@@ -81,7 +81,7 @@
                     :move "Be more specific."
                     :push {:post `move-bed}))
 
-(def safe-combination (str (rand-int 10000)))
+(def safe-combination "67288")
 
 (def paper (item/make ["paper" "piece of paper"]
                       "it had a number written on it."
