@@ -136,7 +136,7 @@
      (utils/replace-item kb new-kb)
      (utils/replace-item safe new-safe))))
 
-(def safe-conditions {:pre enter-combination :post open-safe})
+(def safe-conditions {:pre `enter-combination :post `open-safe})
 
 (def safe (item/make ["safe" "safe box" "strongbox" "strong box"]
                      "Hard to open, all right."
