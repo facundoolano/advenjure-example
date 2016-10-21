@@ -1,6 +1,6 @@
 (ns example.core
   (:require [advenjure.game :as game]
-            [example.rooms :refer [room-map]]
+            [example.room-map :refer [room-map]]
             [example.verbs :refer [verb-map]])
 
   (:gen-class))
