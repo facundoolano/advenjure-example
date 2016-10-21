@@ -153,14 +153,31 @@
                               "A numerical keyboard to unlock the safe box."
                               :use safe-conditions))
 
+(defn move-picture
+  [old gs]
+  (let [portrait (utils/find-first gs "portrait")
+        new-protrait (merge portrait {:move "Enough moving." :pull "Enough moving."})
+        new-living (-> (utils/current-room gs)
+                    (room/add-item safe "Mounted on one of the walls was a safe box with a numerical keyboard on top of it; below the portrait I took down.")
+                    (room/add-item portrait "")
+                    (room/add-item safe-keyboard ""))]
+    (utils/say "I took down the painting, revealing a safe box mounted on the wall.")
+    (assoc-in gs [:room-map :living] new-living)))
+
+
+(def portrait (item/make ["portrait" "painting" "picture"]
+                "It was painting of a middle-aged man, rather ugly if you asked me."
+                :take "Too big to fit in my pocket."
+                :move {:post `move-picture}
+                :pull {:post `move-picture}))
+
 (def living (-> (room/make "Living Room"
                            "A living room with a nailed shut window. A wooden door leaded east and a glass door back to the bedroom."
                            :initial-description "The living room was as smelly as the bedroom, and although there was a window, it appeared to be nailed shut. There was a pretty good chance I'd choke to death if I didn't leave the place soon.\nA wooden door leaded east and a glass door back to the bedroom.")
                 (room/add-item drawer "There was a chest drawer by the door.")
                 (room/add-item door "")
                 (room/add-item glass-door "")
-                (room/add-item safe "Mounted on one of the walls was a safe box with a numerical keyboard on top of it.")
-                (room/add-item safe-keyboard "")
+                (room/add-item portrait "A portrait ocuppied a very prominent place on one of the walls.")
                 (room/add-item (item/make ["window"] "It was nailed shut." :closed true :open "It was nailed shut.") "")))
 
 (def npc (item/make ["character" "suspicious looking character" "npc"]
