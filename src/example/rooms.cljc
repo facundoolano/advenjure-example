@@ -8,8 +8,10 @@
             [advenjure.ui.input :refer [prompt-value]]
             #?(:cljs [advenjure.dialogs]
                :clj [advenjure.dialogs :refer [dialog]])
+            #?(:clj [advenjure.async :refer [alet]])
             [example.dialogs :refer [npc-dialog]])
-  #?(:cljs (:require-macros [advenjure.dialogs :refer [dialog]])))
+  #?(:cljs (:require-macros [advenjure.dialogs :refer [dialog]]
+                            [advenjure.async :refer [alet]])))
 
 ;;; DEFINE ROOMS AND ITEMS
 
@@ -118,9 +120,9 @@
 
 (defn enter-combination
   [game-state]
-  (let [combo (prompt-value "Enter combination: ")
-        combo (string/trim combo)
-        responses ["No luck." "That wasn't it." "Nope."]]
+  (alet [combo (prompt-value "Enter combination: ")
+         combo (string/trim combo)
+         responses ["No luck." "That wasn't it." "Nope."]]
     (if (= combo safe-combination)
         (do (utils/say "Gotcha!") true)
         (get responses (rand-int (count responses))))))
