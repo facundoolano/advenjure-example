@@ -69,21 +69,24 @@
                           "Aluminum."
                           :items #{paper}))
 
-(defn use-ladder
-  [oldgs newgs]
-  (let [connections {:attic :bedroom :bedroom :attic}
-        destination ((:current-room newgs) connections)]
-    (change-rooms newgs destination)))
+(defn go-att [oldgs newgs] (change-rooms newgs :attic))
+(defn go-bed [oldgs newgs] (change-rooms newgs :bedroom))
 
-(def ladder (item/make ["ladder" "stepladder" "step ladder"]
-                       "It was thin, I think I mentioned it."
-                       :use {:post `use-ladder}))
+(def ladder-bed (item/make ["ladder" "stepladder" "step ladder"]
+                           "It was thin, I think I mentioned it."
+                          :use {:post `go-att}
+                          :climb-up :attic))
+
+(def ladder-att (item/make ["ladder" "stepladder" "step ladder"]
+                           "It was thin, I think I mentioned it."
+                           :use {:post `go-bed}
+                           :climb-down :bedroom))
 
 ;;; DEFINE ROOM AND ADD ALL THE ITEMS
 (def bedroom (-> (room/make "Bedroom"
                             "A smelling bedroom. There was an unmade bed near the corner and a door to the north."
                             :initial-description "I woke up in a smelling little bedroom, without windows. By the bed I was laying in was a small table and to the north a glass door.")
-                 (room/add-item ladder "A thin ladder leaded up.")
+                 (room/add-item ladder-bed "A thin ladder leaded up.")
                  (room/add-item bed "") ; empty means skip it while describing, already contained in room description
                  (room/add-item trash-bin "Just by the table, a trash bin.")
                  (room/add-item (item/make "floor" "The floor was scratched near the bed.") "The floor was scratched near the bed.")
@@ -92,4 +95,4 @@
                                            :items #{wallet bottle (item/make ["reading lamp" "lamp"])}))))
 
 (def attic (-> (room/make "Attic" "A dark attic. There was literally nothing of interest there, as if the room existed merely to prove a point.")
-               (room/add-item ladder "")))
+               (room/add-item ladder-att "")))
