@@ -2,7 +2,7 @@
   (:require [advenjure.rooms :as room]
             [advenjure.utils :as utils]
             [example.common :refer [wallet]]
-            [example.bedroom :refer [bedroom]]
+            [example.bedroom :refer [bedroom attic]]
             [example.living :refer [living]]
             [example.hallway :refer [hallway]]))
 
@@ -24,10 +24,12 @@
 
 ;; define a room map and then set the connections between rooms
 (def room-map (-> {:bedroom bedroom
+                   :attic attic
                    :living living
                    :outside outside
                    :hallway hallway}
                   (room/connect :bedroom :north :living)
+                  (room/connect :bedroom :up :attic)
                   (room/one-way-connect :living :east `can-leave?)
                   (room/one-way-connect :hallway :west :living)
                   (room/one-way-connect :hallway :east `npc-gone?)))
