@@ -73,7 +73,7 @@
 
 
 (def portrait (item/make ["portrait" "painting" "picture"]
-                "It was painting of a middle-aged man, rather ugly if you asked me."
+                "It was a painting of a middle-aged man, rather ugly if you asked me."
                 :take "Too big to fit in my pocket."
                 :move {:post `move-picture}
                 :pull {:post `move-picture}))
