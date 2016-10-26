@@ -3,14 +3,15 @@
   :url "https://github.com/facundoolano/advenjure-example"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :plugins [[lein-cljsbuild "1.1.4"]]
+  :plugins [[lein-cljsbuild "1.1.4"]
+            [lein-figwheel "0.5.4-7"]]
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.229"]
                  [advenjure "0.6.2"]]
   :cljsbuild
     {:builds
      {:main {:source-paths ["src"]
-             :compiler {:output-to "main.js"
+             :compiler {:output-to "resources/public/js/main.js"
                         :main example.core
                         :optimizations :simple
                         :pretty-print false
@@ -18,8 +19,11 @@
                         :static-fns true}}
 
       :dev {:source-paths ["src"]
-            :compiler {:output-to "dev.js"
+            :figwheel true
+            :compiler {:output-to "resources/public/js/main.js"
+                       :output-dir "resources/public/js/out"
                        :main example.core
+                       :asset-path "js/out"
                        :optimizations :none
                        :source-map true
                        :pretty-print true}}}}
