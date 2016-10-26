@@ -17,7 +17,7 @@ lein run
 To run the example game on the browser:
 
 ```
-lein cljsbuild once main
+lein figwheel dev
 ```
 
-Then open `index.html`.
+Then open `http://localhost:3449`.
