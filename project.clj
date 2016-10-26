@@ -23,6 +23,7 @@
             :compiler {:output-to "resources/public/js/main.js"
                        :output-dir "resources/public/js/out"
                        :main example.core
+                       :parallel-build true
                        :asset-path "js/out"
                        :optimizations :none
                        :source-map true
