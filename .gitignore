@@ -13,3 +13,4 @@ saved.game
 out/
 main.js
 dev.js
+*.log
