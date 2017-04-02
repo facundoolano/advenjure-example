@@ -18,9 +18,7 @@
 (defn post-drink
   [old-state new-state]
   (let [bottle (utils/find-first new-state "bottle")]
-    (utils/say "Refreshing.")
     (utils/replace-item new-state bottle (assoc bottle :items #{}))))
-
 
 (def bottle (item/make "bottle" "nothing special about it"
                        :items #{(item/make ["amount of water" "water"] "looks good." :drink {:pre `pre-drink :post `post-drink})}
@@ -28,7 +26,7 @@
                        :open true
                        :closed false
                        :close "Didn't want to."
-                       :drink {:pre `pre-drink :post `post-drink}))
+                       :drink {:pre `pre-drink :say "Refreshing." :post `post-drink}))
 
 (def fake-magazine (item/make ["magazine" "naughty magazine"] ; TODO prefer naughty magazine name after reading it
                               "The dust cover read 'Sports Almanac 1950-2000'"
@@ -51,14 +49,13 @@
         new-bedroom (-> bedroom
                         (update-in [:items] item/replace-from old-bed new-bed)
                         (room/add-item fake-magazine "On the floor was a sports magazine."))] ; use a room-specific description of the magazine
-    (utils/say "I pushed the bed revealing a magazine.")
     (assoc-in gs [:room-map :bedroom] new-bedroom)))
-
 
 (def bed (item/make ["bed"] "It was the bed I slept in."
                     :pull "Couldn't move it in that direction."
                     :move "Be more specific."
-                    :push {:post `move-bed}))
+                    :push {:say "I pushed the bed revealing a magazine."
+                           :post `move-bed}))
 
 (def paper (item/make ["paper" "piece of paper"]
                       "it had a number written on it."

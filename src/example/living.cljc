@@ -28,11 +28,9 @@
   [game-state]
   ;; using the alet macro to hide the async nature of user input in clojurescript
   (alet [combo (prompt-value "Enter combination: ")
-         combo (string/trim combo)
-         responses ["No luck." "That wasn't it." "Nope."]]
-    (if (= combo safe-combination)
-        (do (utils/say "Gotcha!") true)
-        (get responses (rand-int (count responses))))))
+         combo (string/trim combo)]
+        (or (= combo safe-combination)
+          (rand-nth ["No luck." "That wasn't it." "Nope."]))))
 
 (defn open-safe
   [old-gs new-gs]
@@ -45,7 +43,9 @@
      (utils/replace-item kb new-kb)
      (utils/replace-item safe new-safe))))
 
-(def safe-conditions {:pre `enter-combination :post `open-safe})
+(def safe-conditions {:pre `enter-combination
+                      :say "Gotcha!"
+                      :post `open-safe})
 
 (def safe (item/make ["safe" "safe box" "strongbox" "strong box"]
                      "Hard to open, all right."
@@ -68,15 +68,16 @@
                     (room/add-item safe "Mounted on one of the walls was a safe box with a numerical keyboard on top of it; below the portrait I took down.")
                     (room/add-item portrait "")
                     (room/add-item safe-keyboard ""))]
-    (utils/say "I took down the painting, revealing a safe box mounted on the wall.")
     (assoc-in gs [:room-map :living] new-living)))
 
 
 (def portrait (item/make ["portrait" "painting" "picture"]
                 "It was a painting of a middle-aged man, rather ugly if you asked me."
                 :take "Too big to fit in my pocket."
-                :move {:post `move-picture}
-                :pull {:post `move-picture}))
+                :move {:say "I took down the painting, revealing a safe box mounted on the wall."
+                       :post `move-picture}
+                :pull {:say "I took down the painting, revealing a safe box mounted on the wall."
+                       :post `move-picture}))
 
 
 ;;; DEFINE ROOM AND ADD ALL THE ITEMS

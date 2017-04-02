@@ -6,7 +6,6 @@
                :clj [advenjure.dialogs :refer [event? not-event? set-event item? dialog conditional optional random]]))
   #?(:cljs (:require-macros [advenjure.dialogs :refer [dialog conditional optional random]])))
 
-
 ;;; first define all the dialog pieces for the character
 
 ; the bool function will take game-state. If true at execution show the first
@@ -49,8 +48,8 @@
   [game-state]
   (let [magazine (first (utils/find-item game-state "magazine")) ; both magazines will work
         npc (first (utils/find-item game-state "character"))]
-    (utils/say "And so the NPC took the magazine and left the room.")
     (-> game-state
+        (utils/say "And so the NPC took the magazine and left the room.")
         (utils/remove-item magazine)
         (utils/remove-item npc))))
 
