@@ -1,5 +1,7 @@
 (ns example.common
   (:require [advenjure.items :as item]
+            #?(:clj [clojure.core.async :refer [go go-loop <! >! chan take!]]
+               :cljs [cljs.core.async :refer [<! >! chan take!]])
             #?(:clj [advenjure.dialogs :refer [dialog]]
                :cljs [advenjure.dialogs]))
   #?(:cljs (:require-macros [advenjure.dialogs :refer [dialog]])))

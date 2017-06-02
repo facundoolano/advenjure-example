@@ -3,11 +3,7 @@
             [advenjure.items :as item]
             [advenjure.rooms :as room]
             [advenjure.utils :as utils]
-            [advenjure.ui.input :refer [prompt-value]]
-            [example.common :refer [safe-combination glass-door wallet]]
-            #?(:clj [advenjure.async :refer [alet]]))
-  #?(:cljs (:require-macros [advenjure.async :refer [alet]])))
-
+            [example.common :refer [safe-combination glass-door wallet]]))
 
 ;;; DEFINE ROOM ITEMS AND HOOKS
 
@@ -24,50 +20,48 @@
                          :take true
                          :gender :female))
 
-(defn enter-combination
-  [game-state]
-  ;; using the alet macro to hide the async nature of user input in clojurescript
-  (alet [combo (prompt-value "Enter combination: ")
-         combo (string/trim combo)]
-        (or (= combo safe-combination)
-          (rand-nth ["No luck." "That wasn't it." "Nope."]))))
+(defn check-combination
+  [game-state combo]
+  (or (= (string/trim combo) safe-combination)
+      (rand-nth ["No luck." "That wasn't it." "Nope."])))
 
 (defn open-safe
   [old-gs new-gs]
-  (let [kb (utils/find-first new-gs "keyboard")
-        new-kb (assoc kb :use "The safe was already open.")
-        safe (utils/find-first new-gs "safe")
+  (let [kb       (utils/find-first new-gs "keyboard")
+        new-kb   (assoc kb :use "The safe was already open.")
+        safe     (utils/find-first new-gs "safe")
         new-safe (merge safe {:closed false
-                              :close "Better left open."})]
+                              :close  "Better left open."})]
     (-> new-gs
-     (utils/replace-item kb new-kb)
-     (utils/replace-item safe new-safe))))
+        (utils/replace-item kb new-kb)
+        (utils/replace-item safe new-safe))))
 
-(def safe-conditions {:pre `enter-combination
-                      :say "Gotcha!"
-                      :post `open-safe})
+(def safe-prompt {:prompt "Enter combination:"
+                  :pre    `check-combination
+                  :say    "Gotcha!"
+                  :post   `open-safe})
 
 (def safe (item/make ["safe" "safe box" "strongbox" "strong box"]
                      "Hard to open, all right."
                      :items #{magazine}
                      :closed true
-                     :open safe-conditions
+                     :open safe-prompt
                      :unlock "I had to USE the keyboard to open the safe."
                      :locked false
                      :lock "It's already locked."))
 
 (def safe-keyboard (item/make ["keyboard" "safe keyboard" "safe box keyboard"]
                               "A numerical keyboard to unlock the safe box."
-                              :use safe-conditions))
+                              :use safe-prompt))
 
 (defn move-picture
   [old gs]
-  (let [portrait (utils/find-first gs "portrait")
-        new-protrait (merge portrait {:move "Enough moving." :pull "Enough moving."})
-        new-living (-> (utils/current-room gs)
-                    (room/add-item safe "Mounted on one of the walls was a safe box with a numerical keyboard on top of it; below the portrait I took down.")
-                    (room/add-item portrait "")
-                    (room/add-item safe-keyboard ""))]
+  (let [portrait     (utils/find-first gs "portrait")
+        new-portrait (merge portrait {:move "Enough moving." :pull "Enough moving."})
+        new-living   (-> (utils/current-room gs)
+                         (room/add-item safe "Mounted on one of the walls was a safe box with a numerical keyboard on top of it; below the portrait I took down.")
+                         (room/add-item new-portrait "")
+                         (room/add-item safe-keyboard ""))]
     (assoc-in gs [:room-map :living] new-living)))
 
 

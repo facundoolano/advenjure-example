@@ -16,5 +16,5 @@
   (game/run game-state
     finished?
     :start-message "Welcome to the example game! type 'help' if you don't know what to do.\n \n"
-    :end-message "\n  \n  \nThe End."
+    :end-message "I found myself in a beautiful garden and was able to breath again. A new adventure began, an adventure that is out of the scope of this example game.\n  \n  \nThe End."
     :verb-map verb-map))

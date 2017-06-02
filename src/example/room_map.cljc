@@ -8,7 +8,7 @@
 
 
 ;; final room, nothing but a description
-(def outside (room/make "Outside" "I found myself in a beautiful garden and was able to breath again. A new adventure began, an adventure that is out of the scope of this example game."))
+(def outside (room/make "Outside" " "))
 
 ;; some conditions to leave rooms
 (defn can-leave? [gs]
