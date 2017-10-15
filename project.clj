@@ -4,11 +4,11 @@
   :license {:name "Eclipse Public License"
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
   :plugins [[lein-cljsbuild "1.1.4"]
-            [lein-figwheel "0.5.4-7"]]
+            [lein-figwheel "0.5.14"]]
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.229"]
                  [org.clojure/core.async "0.2.391"]
-                 [advenjure "0.9.1-SNAPSHOT"]]
+                 [advenjure "1.0.0-SNAPSHOT"]]
   :cljsbuild
   {:builds
    {:main {:source-paths ["src" "checkouts/advenjure/src"]
